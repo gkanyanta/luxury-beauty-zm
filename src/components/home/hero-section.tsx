@@ -74,13 +74,13 @@ export function HeroSection() {
       {slides.map((s, i) => (
         <div
           key={i}
-          className="absolute inset-y-0 right-0 w-1/2 sm:w-[45%] transition-opacity duration-700 ease-in-out flex items-center justify-center"
+          className="absolute inset-y-0 right-0 w-[65%] sm:w-[60%] transition-opacity duration-700 ease-in-out flex items-center justify-center"
           style={{ opacity: i === current ? 1 : 0 }}
         >
           <img
             src={s.image}
             alt=""
-            className="h-[88%] w-auto max-w-[90%] object-contain drop-shadow-2xl"
+            className="h-[92%] w-auto max-w-[95%] object-contain drop-shadow-2xl"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/60 to-transparent" />
         </div>
