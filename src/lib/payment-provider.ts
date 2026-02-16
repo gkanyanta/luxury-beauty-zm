@@ -22,7 +22,7 @@ export class LencoProvider implements PaymentProvider {
   private secretKey: string
 
   constructor() {
-    this.baseUrl = process.env.LENCO_BASE_URL || 'https://api.lenco.co'
+    this.baseUrl = process.env.LENCO_BASE_URL || 'https://api.lenco.co/access/v2'
     this.secretKey = process.env.LENCO_SECRET_KEY || ''
   }
 
@@ -32,7 +32,7 @@ export class LencoProvider implements PaymentProvider {
 
   async verifyPayment(reference: string): Promise<PaymentVerifyResult> {
     const response = await fetch(
-      `${this.baseUrl}/access/v2/collections/status/${reference}`,
+      `${this.baseUrl}/collections/status/${reference}`,
       {
         headers: { Authorization: `Bearer ${this.secretKey}` },
       }
