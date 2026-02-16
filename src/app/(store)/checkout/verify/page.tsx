@@ -1,34 +1,55 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Loader2, CheckCircle, XCircle } from 'lucide-react'
+import { Loader2, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 function VerifyContent() {
   const searchParams = useSearchParams()
-  const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'pending' | 'failed'>('loading')
   const [orderNumber, setOrderNumber] = useState('')
+  const [pollCount, setPollCount] = useState(0)
+
+  const reference = searchParams.get('reference') || searchParams.get('trxref')
+
+  const verifyPayment = useCallback(async () => {
+    if (!reference) { setStatus('failed'); return }
+    try {
+      const res = await fetch('/api/payments/lenco/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('success')
+        setOrderNumber(data.orderNumber || '')
+      } else if (data.pending) {
+        setStatus('pending')
+        setOrderNumber(data.orderNumber || '')
+      } else {
+        setStatus('failed')
+      }
+    } catch {
+      setStatus('failed')
+    }
+  }, [reference])
 
   useEffect(() => {
-    const reference = searchParams.get('reference') || searchParams.get('trxref')
-    if (!reference) { setStatus('failed'); return }
-    fetch('/api/payments/lenco/verify', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reference }),
-    })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          setStatus('success')
-          setOrderNumber(data.orderNumber || '')
-        } else {
-          setStatus('failed')
-        }
-      })
-      .catch(() => setStatus('failed'))
-  }, [searchParams])
+    verifyPayment()
+  }, [verifyPayment])
+
+  // Auto-poll while pending (up to 6 times = ~30 seconds)
+  useEffect(() => {
+    if (status !== 'pending' || pollCount >= 6) return
+    const timer = setTimeout(() => {
+      setPollCount(prev => prev + 1)
+      verifyPayment()
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [status, pollCount, verifyPayment])
 
   if (status === 'loading') {
     return (
@@ -47,6 +68,31 @@ function VerifyContent() {
         {orderNumber && <p className="text-sm text-amber-800 font-medium mb-6">Order: {orderNumber}</p>}
         <div className="flex gap-3 justify-center">
           <Link href="/shop"><Button variant="luxury">Continue Shopping</Button></Link>
+          <Link href="/account/orders"><Button variant="outline">View Orders</Button></Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'pending') {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-20 text-center">
+        <Clock className="mx-auto h-16 w-16 text-amber-600 mb-4" />
+        <h1 className="text-2xl font-light text-neutral-900 mb-2">Payment Processing</h1>
+        {orderNumber && <p className="text-sm text-amber-800 font-medium mb-2">Order: {orderNumber}</p>}
+        <p className="text-neutral-500 mb-6">
+          Your payment is still being processed. This can take a few minutes.
+          {pollCount < 6
+            ? ' We are checking automatically...'
+            : ' Please check back shortly or view your orders.'}
+        </p>
+        {pollCount < 6 && <Loader2 className="mx-auto h-5 w-5 text-amber-800 animate-spin mb-4" />}
+        <div className="flex gap-3 justify-center">
+          {pollCount >= 6 && (
+            <Button variant="luxury" onClick={() => { setPollCount(0); setStatus('loading'); verifyPayment() }}>
+              Check Again
+            </Button>
+          )}
           <Link href="/account/orders"><Button variant="outline">View Orders</Button></Link>
         </div>
       </div>

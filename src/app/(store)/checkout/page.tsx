@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Script from 'next/script'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,6 +20,13 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState<any>(null)
   const [shippingRates, setShippingRates] = useState<any[]>([])
   const [selectedRate, setSelectedRate] = useState<any>(null)
+  const [lencoReady, setLencoReady] = useState(false)
+  const [awaitingPayment, setAwaitingPayment] = useState<{
+    reference: string
+    total: number
+    email: string
+    orderNumber: string
+  } | null>(null)
 
   const [form, setForm] = useState({
     email: '', firstName: '', lastName: '', phone: '',
@@ -28,9 +36,9 @@ export default function CheckoutPage() {
   })
 
   useEffect(() => {
-    if (items.length === 0) router.push('/cart')
+    if (items.length === 0 && !awaitingPayment) router.push('/cart')
     fetch('/api/shipping-rates').then(r => r.json()).then(data => setShippingRates(data)).catch(() => {})
-  }, [items.length, router])
+  }, [items.length, router, awaitingPayment])
 
   useEffect(() => {
     if (form.province && shippingRates.length > 0) {
@@ -62,6 +70,63 @@ export default function CheckoutPage() {
     } catch { setError('Failed to validate') }
   }
 
+  const openLencoWidget = (paymentData: { reference: string; total: number; email: string; orderNumber: string }) => {
+    if (typeof window === 'undefined' || !window.LencoPay) {
+      setError('Payment system is loading. Please try again.')
+      setLoading(false)
+      return
+    }
+
+    window.LencoPay.getPaid({
+      publicKey: process.env.NEXT_PUBLIC_LENCO_PUBLIC_KEY || '',
+      reference: paymentData.reference,
+      amount: paymentData.total,
+      currency: 'ZMW',
+      email: paymentData.email,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      onSuccess: async (response) => {
+        try {
+          const res = await fetch('/api/payments/lenco/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reference: response.reference }),
+          })
+          const data = await res.json()
+          if (data.success) {
+            clearCart()
+            router.push(`/checkout/success?order=${paymentData.orderNumber}`)
+          } else if (data.pending) {
+            clearCart()
+            router.push(`/checkout/verify?reference=${paymentData.reference}`)
+          } else {
+            setError('Payment verification failed. Please contact support.')
+            setLoading(false)
+          }
+        } catch {
+          clearCart()
+          router.push(`/checkout/verify?reference=${paymentData.reference}`)
+        }
+      },
+      onClose: () => {
+        setAwaitingPayment(paymentData)
+        setError('')
+        setLoading(false)
+      },
+      onConfirmationPending: (response) => {
+        clearCart()
+        router.push(`/checkout/verify?reference=${response.reference}`)
+      },
+    })
+  }
+
+  const handleRetryPayment = () => {
+    if (!awaitingPayment) return
+    setLoading(true)
+    setError('')
+    openLencoWidget(awaitingPayment)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.province) { setError('Please select a province'); return }
@@ -80,22 +145,58 @@ export default function CheckoutPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Checkout failed')
-      clearCart()
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl
+
+      if (data.requiresPayment) {
+        const paymentData = {
+          reference: data.reference,
+          total: data.total,
+          email: data.email,
+          orderNumber: data.orderNumber,
+        }
+        openLencoWidget(paymentData)
       } else {
+        clearCart()
         router.push(`/checkout/success?order=${data.orderNumber}`)
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong')
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const update = (key: string, value: string) => setForm(prev => ({ ...prev, [key]: value }))
 
+  // Show retry UI when user closed the payment widget
+  if (awaitingPayment) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-20 text-center">
+        <Script
+          src="https://pay.lenco.co/js/v1/inline.js"
+          onReady={() => setLencoReady(true)}
+        />
+        <CreditCard className="mx-auto h-16 w-16 text-amber-800 mb-4" />
+        <h1 className="text-2xl font-light text-neutral-900 mb-2">Complete Your Payment</h1>
+        <p className="text-neutral-500 mb-2">
+          Your order <span className="font-medium text-amber-800">{awaitingPayment.orderNumber}</span> has been saved.
+        </p>
+        <p className="text-sm text-neutral-400 mb-6">Click below to complete payment of {formatPrice(awaitingPayment.total)}.</p>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <div className="flex gap-3 justify-center">
+          <Button variant="luxury" size="lg" onClick={handleRetryPayment} disabled={loading}>
+            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Opening...</> : 'Pay Now'}
+          </Button>
+          <Button variant="outline" onClick={() => router.push('/account/orders')}>View Orders</Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+      <Script
+        src="https://pay.lenco.co/js/v1/inline.js"
+        onReady={() => setLencoReady(true)}
+      />
       <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-neutral-900 mb-8">Checkout</h1>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">

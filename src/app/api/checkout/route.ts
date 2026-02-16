@@ -164,29 +164,24 @@ export async function POST(req: Request) {
 
     // Handle payment
     if (mappedPaymentMethod === 'LENCO') {
-      try {
-        const provider = new LencoProvider()
-        const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/verify`
-        const paymentResult = await provider.initialize({
-          orderId: order.id,
-          amount: total,
-          currency: 'ZMW',
-          email,
-          callbackUrl,
-        })
+      const provider = new LencoProvider()
+      const reference = provider.generateReference(order.id)
 
-        await prisma.paymentTransaction.create({
-          data: {
-            orderId: order.id, provider: 'LENCO', reference: paymentResult.reference,
-            amount: total, status: 'PENDING', customerEmail: email, idempotencyKey: `${order.id}-init`,
-          },
-        })
+      await prisma.paymentTransaction.create({
+        data: {
+          orderId: order.id, provider: 'LENCO', reference,
+          amount: total, status: 'PENDING', customerEmail: email, idempotencyKey: `${order.id}-init`,
+        },
+      })
 
-        return NextResponse.json({ orderNumber: order.orderNumber, paymentUrl: paymentResult.checkoutUrl })
-      } catch (err) {
-        console.error('Payment init error:', err)
-        return NextResponse.json({ orderNumber: order.orderNumber, error: 'Payment initialization failed. Please try again.' }, { status: 500 })
-      }
+      return NextResponse.json({
+        orderNumber: order.orderNumber,
+        orderId: order.id,
+        reference,
+        total,
+        email,
+        requiresPayment: true,
+      })
     }
 
     // For manual/COD — send confirmation email
