@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && next build",
+    "prisma:postgenerate": "node -e \"require('fs').writeFileSync('src/generated/prisma/index.ts','export * from \\\"./client\\\"\\n')\"",
+    "build": "npx prisma generate && npm run prisma:postgenerate && next build",
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "npx prisma migrate dev",
@@ -13,12 +14,15 @@
     "db:studio": "npx prisma studio",
     "test": "jest",
     "test:watch": "jest --watch",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate && npm run prisma:postgenerate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@neondatabase/serverless": "^1.0.2",
+    "@prisma/adapter-neon": "^7.4.0",
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.0",
+    "@types/ws": "^8.18.1",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -37,6 +41,7 @@
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.4.1",
     "uuid": "^13.0.0",
+    "ws": "^8.19.0",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"
   },
