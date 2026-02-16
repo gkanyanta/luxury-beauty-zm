@@ -89,7 +89,6 @@ export async function POST(req: Request) {
     // Map paymentMethod from client to enum
     const paymentMethodMap: Record<string, string> = {
       'LENCO_ONLINE': 'LENCO',
-      'MANUAL_MOBILE_MONEY': 'MANUAL_MOMO',
       'PAY_ON_DELIVERY': 'PAY_ON_DELIVERY',
     }
     const mappedPaymentMethod = paymentMethodMap[paymentMethod] || paymentMethod

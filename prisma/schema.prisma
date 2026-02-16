@@ -41,7 +41,6 @@ enum OrderStatus {
 
 enum PaymentMethod {
   LENCO
-  MANUAL_MOMO
   PAY_ON_DELIVERY
 }
 
@@ -419,7 +418,7 @@ model OrderItem {
 model PaymentTransaction {
   id            String        @id @default(cuid())
   orderId       String
-  provider      String        // "LENCO", "MANUAL_MOMO", "PAY_ON_DELIVERY"
+  provider      String        // "LENCO", "PAY_ON_DELIVERY"
   reference     String        @unique
   amount        Decimal       @db.Decimal(10, 2)
   currency      String        @default("ZMW")

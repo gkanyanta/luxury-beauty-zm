@@ -26,7 +26,7 @@ export const checkoutSchema = z.object({
   email: z.email(),
   phone: z.string().min(9),
   address: addressSchema,
-  paymentMethod: z.enum(['LENCO', 'MANUAL_MOMO', 'PAY_ON_DELIVERY']),
+  paymentMethod: z.enum(['LENCO', 'PAY_ON_DELIVERY']),
   customerNotes: z.string().optional(),
   discountCode: z.string().optional(),
 })
