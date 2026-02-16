@@ -1,27 +1,12 @@
 import 'dotenv/config'
 import { PrismaClient } from '../src/generated/prisma'
-import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool as PgPool } from 'pg'
-import { Pool as NeonPool, neonConfig } from '@neondatabase/serverless'
+import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
-import ws from 'ws'
 
-const url = process.env.DATABASE_URL || ''
-const isNeon = url.includes('neon.tech')
-
-let prisma: PrismaClient
-
-if (isNeon) {
-  neonConfig.webSocketConstructor = ws
-  const pool = new NeonPool({ connectionString: url })
-  const adapter = new PrismaNeon(pool)
-  prisma = new PrismaClient({ adapter } as any)
-} else {
-  const pool = new PgPool({ connectionString: url })
-  const adapter = new PrismaPg(pool)
-  prisma = new PrismaClient({ adapter } as any)
-}
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter } as any)
 
 async function main() {
   console.log('Seeding database...')
