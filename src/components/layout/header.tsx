@@ -14,9 +14,12 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
+  const [mounted, setMounted] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const itemCount = useCartStore((s) => s.getItemCount())
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -77,7 +80,7 @@ export function Header() {
               <Link href="/account" className="hidden sm:block p-2 text-neutral-600 hover:text-neutral-900 transition-colors"><User className="h-5 w-5" /></Link>
               <Link href="/cart" className="relative p-2 text-neutral-600 hover:text-neutral-900 transition-colors">
                 <ShoppingBag className="h-5 w-5" />
-                {itemCount > 0 && (
+                {mounted && itemCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-neutral-900 text-[10px] font-medium text-white">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>

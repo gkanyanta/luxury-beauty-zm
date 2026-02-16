@@ -23,7 +23,7 @@ export function Footer() {
             <h4 className="text-sm font-medium text-white tracking-wider uppercase mb-4">Customer Care</h4>
             <ul className="space-y-2.5">
               <li><Link href="/account/orders" className="text-sm hover:text-white transition-colors">Track Order</Link></li>
-              <li><Link href="/contact" className="text-sm hover:text-white transition-colors">Contact Us</Link></li>
+              <li><a href="mailto:hello@luxurybeautyzm.com" className="text-sm hover:text-white transition-colors">Contact Us</a></li>
             </ul>
           </div>
           <div>
