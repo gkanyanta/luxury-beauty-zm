@@ -60,6 +60,7 @@ async function main() {
     { name: 'Fragrances', slug: 'fragrances', description: 'Luxury and niche perfumes' },
     { name: 'K-Beauty', slug: 'k-beauty', description: 'Korean skincare and beauty' },
     { name: 'Skincare', slug: 'skincare', description: 'Premium UK & USA skincare brands' },
+    { name: 'Hair Products', slug: 'hair-products', description: 'Professional hair care and styling' },
   ]
 
   const categories: Record<string, any> = {}

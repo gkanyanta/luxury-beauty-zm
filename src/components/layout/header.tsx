@@ -44,12 +44,13 @@ export function Header() {
     { name: 'Fragrances', href: '/shop?category=fragrances' },
     { name: 'K-Beauty', href: '/shop?category=k-beauty' },
     { name: 'Skincare', href: '/shop?category=skincare' },
+    { name: 'Hair Products', href: '/shop?category=hair-products' },
   ]
 
   return (
     <>
       <div className="bg-neutral-900 text-white text-center text-xs py-2 px-4 tracking-wider">
-        FREE DELIVERY IN LUSAKA ON ORDERS OVER K500
+        FREE DELIVERY IN LUSAKA ON ORDERS OVER K2000
       </div>
       <header className={cn('sticky top-0 z-50 w-full transition-all duration-300', isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white')}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

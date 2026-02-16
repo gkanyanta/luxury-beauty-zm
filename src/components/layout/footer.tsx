@@ -15,6 +15,7 @@ export function Footer() {
               <li><Link href="/shop?category=fragrances" className="text-sm hover:text-white transition-colors">Fragrances</Link></li>
               <li><Link href="/shop?category=k-beauty" className="text-sm hover:text-white transition-colors">K-Beauty</Link></li>
               <li><Link href="/shop?category=skincare" className="text-sm hover:text-white transition-colors">Skincare</Link></li>
+              <li><Link href="/shop?category=hair-products" className="text-sm hover:text-white transition-colors">Hair Products</Link></li>
               <li><Link href="/shop" className="text-sm hover:text-white transition-colors">All Products</Link></li>
             </ul>
           </div>
