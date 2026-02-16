@@ -78,13 +78,16 @@ export default function CheckoutPage() {
     }
 
     window.LencoPay.getPaid({
-      publicKey: process.env.NEXT_PUBLIC_LENCO_PUBLIC_KEY || '',
+      key: process.env.NEXT_PUBLIC_LENCO_PUBLIC_KEY || '',
       reference: paymentData.reference,
       amount: paymentData.total,
       currency: 'ZMW',
       email: paymentData.email,
-      firstName: form.firstName,
-      lastName: form.lastName,
+      customer: {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+      },
       onSuccess: async (response) => {
         try {
           const res = await fetch('/api/payments/lenco/verify', {

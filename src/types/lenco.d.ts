@@ -1,11 +1,14 @@
 interface LencoPayConfig {
-  publicKey: string
+  key: string
   reference: string
   amount: number
   currency?: string
   email: string
-  firstName?: string
-  lastName?: string
+  customer?: {
+    firstName?: string
+    lastName?: string
+    phone?: string
+  }
   onSuccess: (response: { reference: string; status: string }) => void
   onClose: () => void
   onConfirmationPending?: (response: { reference: string }) => void
