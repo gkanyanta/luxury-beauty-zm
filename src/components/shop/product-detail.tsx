@@ -20,7 +20,7 @@ export function ProductDetail({ product }: { product: any }) {
   const images = product.images || []
   const price = selectedVariant ? selectedVariant.price : product.price
   const comparePrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice
-  const inStock = selectedVariant ? selectedVariant.stock > 0 : product.stock > 0
+  const inStock = selectedVariant ? selectedVariant.stockQty > 0 : product.stockQty > 0
 
   const handleAdd = () => {
     addItem({
@@ -30,7 +30,7 @@ export function ProductDetail({ product }: { product: any }) {
       price: Number(price),
       image: images[0]?.url || '',
       slug: product.slug,
-      maxStock: selectedVariant?.stock || product.stock,
+      maxStock: selectedVariant?.stockQty || product.stockQty,
       quantity: qty,
     })
     setAdded(true)

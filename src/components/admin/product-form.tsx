@@ -25,7 +25,7 @@ export function ProductForm({ product, categories, brands }: ProductFormProps) {
     price: product?.price?.toString() || '',
     compareAtPrice: product?.compareAtPrice?.toString() || '',
     sku: product?.sku || '',
-    stock: product?.stock?.toString() || '0',
+    stock: product?.stockQty?.toString() || '0',
     categoryId: product?.categoryId || '',
     brandId: product?.brandId || '',
     status: product?.status || 'DRAFT',
