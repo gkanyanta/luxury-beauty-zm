@@ -79,7 +79,11 @@ export function ProductForm({ product, categories, brands }: ProductFormProps) {
       const url = product ? `/api/admin/products/${product.id}` : '/api/admin/products'
       const method = product ? 'PUT' : 'POST'
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed') }
+      if (!res.ok) {
+        let message = 'Failed to save product'
+        try { const data = await res.json(); message = data.error || message } catch {}
+        throw new Error(message)
+      }
       router.push('/admin/products')
       router.refresh()
     } catch (err: any) { setError(err.message) }
