@@ -80,7 +80,7 @@ export function HeroSection() {
           <img
             src={s.image}
             alt=""
-            className="h-[75%] w-auto max-w-[85%] object-contain drop-shadow-2xl"
+            className="h-[88%] w-auto max-w-[90%] object-contain drop-shadow-2xl"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/60 to-transparent" />
         </div>
