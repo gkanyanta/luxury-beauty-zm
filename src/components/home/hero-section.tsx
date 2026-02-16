@@ -67,19 +67,22 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-neutral-950 text-white">
-      {/* Background images - all preloaded, opacity toggle */}
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-amber-950/30" />
+
+      {/* Product images - positioned on the right */}
       {slides.map((s, i) => (
         <div
           key={i}
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+          className="absolute inset-y-0 right-0 w-1/2 sm:w-[45%] transition-opacity duration-700 ease-in-out flex items-center justify-center"
           style={{ opacity: i === current ? 1 : 0 }}
         >
           <img
             src={s.image}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-[75%] w-auto max-w-[85%] object-contain drop-shadow-2xl"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/80 via-neutral-950/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/60 to-transparent" />
         </div>
       ))}
 
