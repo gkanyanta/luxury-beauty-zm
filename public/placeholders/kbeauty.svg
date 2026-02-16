@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="kbg" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#fdf8f4"/>
+      <stop offset="100%" stop-color="#f5ebe0"/>
+    </linearGradient>
+    <linearGradient id="kbottle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8b4b8"/>
+      <stop offset="100%" stop-color="#d4a0a5"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="url(#kbg)"/>
+  <!-- K-Beauty dropper bottle -->
+  <g transform="translate(300, 380)">
+    <!-- Body - rounded -->
+    <rect x="-40" y="-80" width="80" height="200" rx="20" fill="url(#kbottle)" opacity="0.25"/>
+    <!-- Dropper neck -->
+    <rect x="-15" y="-120" width="30" height="45" rx="4" fill="url(#kbottle)" opacity="0.3"/>
+    <!-- Dropper bulb -->
+    <ellipse cx="0" cy="-140" rx="16" ry="22" fill="url(#kbottle)" opacity="0.2"/>
+    <!-- Label -->
+    <rect x="-28" y="-30" width="56" height="70" rx="3" fill="white" opacity="0.3"/>
+    <line x1="-15" y1="-10" x2="15" y2="-10" stroke="#d4a0a5" stroke-width="0.8" opacity="0.3"/>
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#d4a0a5" stroke-width="0.6" opacity="0.2"/>
+    <circle cx="0" cy="18" r="8" fill="none" stroke="#d4a0a5" stroke-width="0.6" opacity="0.2"/>
+    <!-- Shine -->
+    <rect x="-32" y="-65" width="5" height="90" rx="2.5" fill="white" opacity="0.18"/>
+    <!-- Drop -->
+    <ellipse cx="0" cy="135" rx="10" ry="8" fill="#e8b4b8" opacity="0.15"/>
+    <ellipse cx="0" cy="132" rx="5" ry="3" fill="white" opacity="0.1"/>
+  </g>
+  <ellipse cx="300" cy="510" rx="60" ry="6" fill="#d4a0a5" opacity="0.06"/>
+</svg>

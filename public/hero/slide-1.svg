@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="800" viewBox="0 0 1920 800">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c1917"/>
+      <stop offset="50%" stop-color="#292524"/>
+      <stop offset="100%" stop-color="#44403c"/>
+    </linearGradient>
+    <linearGradient id="gold1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4a574"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.7" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="#d4a574" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="800" fill="url(#bg1)"/>
+  <rect width="1920" height="800" fill="url(#glow1)"/>
+
+  <!-- Elegant woman silhouette - portrait style -->
+  <g transform="translate(1200, 100)">
+    <!-- Face oval -->
+    <ellipse cx="150" cy="180" rx="90" ry="120" fill="url(#gold1)" opacity="0.2"/>
+    <!-- Neck -->
+    <rect x="125" y="290" width="50" height="80" rx="25" fill="url(#gold1)" opacity="0.15"/>
+    <!-- Shoulders -->
+    <ellipse cx="150" cy="380" rx="160" ry="60" fill="url(#gold1)" opacity="0.12"/>
+    <!-- Hair flowing -->
+    <path d="M60 140 Q40 60 100 40 Q150 20 200 40 Q260 60 240 140 Q250 200 260 280 Q200 240 150 250 Q100 240 80 280 Q50 200 60 140Z" fill="url(#gold1)" opacity="0.18"/>
+    <!-- Facial features - subtle -->
+    <ellipse cx="125" cy="165" rx="12" ry="6" fill="#1c1917" opacity="0.3"/>
+    <ellipse cx="175" cy="165" rx="12" ry="6" fill="#1c1917" opacity="0.3"/>
+    <path d="M135 205 Q150 215 165 205" fill="none" stroke="#1c1917" stroke-width="2" opacity="0.25"/>
+    <!-- Sparkle accents -->
+    <circle cx="80" cy="100" r="2" fill="#d4a574" opacity="0.6"/>
+    <circle cx="220" cy="120" r="1.5" fill="#d4a574" opacity="0.5"/>
+    <circle cx="40" cy="200" r="1" fill="#d4a574" opacity="0.4"/>
+    <circle cx="260" cy="180" r="1.5" fill="#d4a574" opacity="0.5"/>
+    <!-- Skin glow effect -->
+    <ellipse cx="150" cy="180" rx="70" ry="100" fill="#d4a574" opacity="0.05"/>
+  </g>
+
+  <!-- Decorative elements -->
+  <line x1="100" y1="700" x2="500" y2="700" stroke="#d4a574" stroke-width="0.5" opacity="0.3"/>
+  <text x="100" y="740" font-family="system-ui,sans-serif" font-size="12" fill="#d4a574" opacity="0.5" letter-spacing="0.3em">RADIANT BEAUTY</text>
+
+  <!-- Corner accents -->
+  <path d="M0 0 L80 0 L80 2 L2 2 L2 80 L0 80Z" fill="#d4a574" opacity="0.2"/>
+  <path d="M1920 800 L1840 800 L1840 798 L1918 798 L1918 720 L1920 720Z" fill="#d4a574" opacity="0.2"/>
+</svg>

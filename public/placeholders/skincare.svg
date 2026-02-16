@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="sbg" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#faf9f7"/>
+      <stop offset="100%" stop-color="#f0ece6"/>
+    </linearGradient>
+    <linearGradient id="jar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="100%" stop-color="#d0d0d0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="url(#sbg)"/>
+  <!-- Skincare jar -->
+  <g transform="translate(300, 400)">
+    <!-- Jar body -->
+    <rect x="-65" y="-50" width="130" height="100" rx="14" fill="url(#jar)" opacity="0.35"/>
+    <!-- Lid -->
+    <rect x="-70" y="-65" width="140" height="20" rx="5" fill="url(#jar)" opacity="0.4"/>
+    <!-- Label area -->
+    <rect x="-45" y="-30" width="90" height="55" rx="4" fill="white" opacity="0.25"/>
+    <line x1="-30" y1="-15" x2="30" y2="-15" stroke="#a8a29e" stroke-width="1" opacity="0.3"/>
+    <line x1="-20" y1="-5" x2="20" y2="-5" stroke="#a8a29e" stroke-width="0.8" opacity="0.2"/>
+    <line x1="-25" y1="5" x2="25" y2="5" stroke="#a8a29e" stroke-width="0.8" opacity="0.2"/>
+    <!-- Shine -->
+    <rect x="-55" y="-45" width="6" height="50" rx="3" fill="white" opacity="0.2"/>
+    <!-- Cream drop -->
+    <ellipse cx="80" cy="-30" rx="20" ry="18" fill="#f5ebe0" opacity="0.5"/>
+    <ellipse cx="80" cy="-35" rx="12" ry="8" fill="white" opacity="0.3"/>
+  </g>
+  <ellipse cx="300" cy="510" rx="90" ry="6" fill="#d0d0d0" opacity="0.08"/>
+</svg>

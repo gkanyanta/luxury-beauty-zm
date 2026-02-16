@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="800" viewBox="0 0 1920 800">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#3b2f2f"/>
+    </linearGradient>
+    <linearGradient id="gold2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8c89e"/>
+      <stop offset="100%" stop-color="#c4956a"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="0.65" cy="0.5" r="0.4">
+      <stop offset="0%" stop-color="#c4956a" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="800" fill="url(#bg2)"/>
+  <rect width="1920" height="800" fill="url(#glow2)"/>
+
+  <!-- Second woman - side profile with elegant pose -->
+  <g transform="translate(1100, 80)">
+    <!-- Hair up-do -->
+    <ellipse cx="200" cy="120" rx="80" ry="100" fill="url(#gold2)" opacity="0.2"/>
+    <ellipse cx="230" cy="80" rx="60" ry="70" fill="url(#gold2)" opacity="0.15"/>
+    <!-- Face - side angle -->
+    <ellipse cx="180" cy="200" rx="75" ry="100" fill="url(#gold2)" opacity="0.22"/>
+    <!-- Neck elegant -->
+    <path d="M155 290 Q140 340 130 400 Q170 380 190 290Z" fill="url(#gold2)" opacity="0.16"/>
+    <!-- Shoulder line -->
+    <path d="M80 420 Q130 390 180 400 Q230 390 300 420 Q240 440 180 430 Q120 440 80 420Z" fill="url(#gold2)" opacity="0.12"/>
+    <!-- Facial features - profile -->
+    <ellipse cx="155" cy="185" rx="10" ry="6" fill="#1c1917" opacity="0.25"/>
+    <path d="M145 225 Q155 233 165 228" fill="none" stroke="#1c1917" stroke-width="1.5" opacity="0.2"/>
+    <!-- Earring -->
+    <circle cx="225" cy="210" r="4" fill="#d4a574" opacity="0.5"/>
+    <line x1="225" y1="214" x2="225" y2="235" stroke="#d4a574" stroke-width="1" opacity="0.4"/>
+    <circle cx="225" cy="238" r="3" fill="#d4a574" opacity="0.4"/>
+    <!-- Glow -->
+    <ellipse cx="180" cy="200" rx="60" ry="80" fill="#e8c89e" opacity="0.04"/>
+    <!-- Sparkles -->
+    <circle cx="100" cy="150" r="1.5" fill="#e8c89e" opacity="0.5"/>
+    <circle cx="280" cy="100" r="2" fill="#e8c89e" opacity="0.4"/>
+    <circle cx="320" cy="250" r="1" fill="#e8c89e" opacity="0.6"/>
+  </g>
+
+  <!-- Decorative -->
+  <line x1="100" y1="700" x2="450" y2="700" stroke="#e8c89e" stroke-width="0.5" opacity="0.3"/>
+  <text x="100" y="740" font-family="system-ui,sans-serif" font-size="12" fill="#e8c89e" opacity="0.5" letter-spacing="0.3em">FLAWLESS SKIN</text>
+
+  <path d="M0 0 L80 0 L80 2 L2 2 L2 80 L0 80Z" fill="#e8c89e" opacity="0.2"/>
+  <path d="M1920 800 L1840 800 L1840 798 L1918 798 L1918 720 L1920 720Z" fill="#e8c89e" opacity="0.2"/>
+</svg>

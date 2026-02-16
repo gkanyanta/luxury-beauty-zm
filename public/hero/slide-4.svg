@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="800" viewBox="0 0 1920 800">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#2d2320"/>
+    </linearGradient>
+    <linearGradient id="gold4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8d5b7"/>
+      <stop offset="100%" stop-color="#c4956a"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8b4b8"/>
+      <stop offset="100%" stop-color="#c98a8e"/>
+    </linearGradient>
+    <radialGradient id="glow4" cx="0.6" cy="0.5" r="0.4">
+      <stop offset="0%" stop-color="#e8d5b7" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="800" fill="url(#bg4)"/>
+  <rect width="1920" height="800" fill="url(#glow4)"/>
+
+  <!-- K-Beauty & Skincare products arrangement -->
+  <g transform="translate(1000, 120)">
+    <!-- Essence bottle - tall and slim -->
+    <rect x="100" y="80" width="55" height="250" rx="8" fill="url(#pink)" opacity="0.18"/>
+    <rect x="110" y="55" width="35" height="30" rx="4" fill="url(#pink)" opacity="0.22"/>
+    <circle cx="128" cy="45" r="10" fill="url(#pink)" opacity="0.15"/>
+    <rect x="112" y="150" width="32" height="50" rx="2" fill="white" opacity="0.06"/>
+
+    <!-- Toner bottle - rounded -->
+    <rect x="220" y="100" width="65" height="220" rx="20" fill="url(#gold4)" opacity="0.2"/>
+    <rect x="235" y="75" width="35" height="30" rx="4" fill="url(#gold4)" opacity="0.18"/>
+    <ellipse cx="253" cy="200" rx="20" ry="30" fill="white" opacity="0.04"/>
+
+    <!-- Cream jar - round -->
+    <ellipse cx="380" cy="260" rx="55" ry="45" fill="url(#gold4)" opacity="0.22"/>
+    <rect x="325" y="230" width="110" height="10" rx="3" fill="url(#gold4)" opacity="0.28"/>
+    <ellipse cx="380" cy="245" rx="35" ry="10" fill="white" opacity="0.05"/>
+
+    <!-- Serum ampoule -->
+    <rect x="480" y="150" width="40" height="160" rx="6" fill="url(#pink)" opacity="0.15"/>
+    <path d="M490 150 L510 150 L505 120 Q500 100 495 120Z" fill="url(#pink)" opacity="0.2"/>
+    <circle cx="500" cy="95" r="5" fill="url(#pink)" opacity="0.25"/>
+
+    <!-- Sheet mask packet -->
+    <rect x="560" y="180" width="80" height="110" rx="6" fill="url(#gold4)" opacity="0.15"/>
+    <rect x="570" y="200" width="60" height="40" rx="3" fill="white" opacity="0.04"/>
+    <ellipse cx="600" cy="250" rx="20" ry="12" fill="url(#pink)" opacity="0.1"/>
+
+    <!-- Floating elements -->
+    <circle cx="180" cy="60" r="2" fill="#e8d5b7" opacity="0.5"/>
+    <circle cx="320" cy="80" r="1.5" fill="#e8b4b8" opacity="0.4"/>
+    <circle cx="450" cy="100" r="1" fill="#e8d5b7" opacity="0.6"/>
+    <circle cx="550" cy="140" r="1.5" fill="#e8b4b8" opacity="0.4"/>
+    <circle cx="650" cy="170" r="1" fill="#e8d5b7" opacity="0.5"/>
+
+    <!-- Surface reflection -->
+    <ellipse cx="350" cy="340" rx="300" ry="15" fill="#e8d5b7" opacity="0.04"/>
+  </g>
+
+  <!-- Decorative -->
+  <line x1="100" y1="700" x2="480" y2="700" stroke="#e8d5b7" stroke-width="0.5" opacity="0.3"/>
+  <text x="100" y="740" font-family="system-ui,sans-serif" font-size="12" fill="#e8d5b7" opacity="0.5" letter-spacing="0.3em">PREMIUM SKINCARE</text>
+
+  <path d="M0 0 L80 0 L80 2 L2 2 L2 80 L0 80Z" fill="#e8d5b7" opacity="0.2"/>
+  <path d="M1920 800 L1840 800 L1840 798 L1918 798 L1918 720 L1920 720Z" fill="#e8d5b7" opacity="0.2"/>
+</svg>
