@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { formatPrice } from '@/lib/utils'
 import { ZAMBIA_PROVINCES } from '@/lib/utils'
-import { Loader2, CreditCard, Smartphone, Truck, Tag } from 'lucide-react'
+import { Loader2, CreditCard, Truck, Tag } from 'lucide-react'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -240,7 +240,6 @@ export default function CheckoutPage() {
               <div className="space-y-2">
                 {[
                   { value: 'LENCO_ONLINE', label: 'Pay Online', desc: 'Visa, Mastercard via Lenco', icon: CreditCard },
-                  { value: 'MANUAL_MOBILE_MONEY', label: 'Mobile Money', desc: 'Airtel Money / MTN MoMo — send & share screenshot', icon: Smartphone },
                   { value: 'PAY_ON_DELIVERY', label: 'Pay on Delivery', desc: 'Lusaka only — cash or mobile money', icon: Truck },
                 ].map(method => (
                   <label key={method.value} className={`flex items-center gap-3 p-3 border rounded-sm cursor-pointer transition-colors ${form.paymentMethod === method.value ? 'border-amber-800 bg-amber-50/50' : 'hover:bg-neutral-50'}`}>
