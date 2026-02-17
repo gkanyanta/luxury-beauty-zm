@@ -41,6 +41,9 @@ export function Footer() {
             <Link href="/terms" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Terms of Service</Link>
           </div>
         </div>
+        <p className="mt-4 text-center text-xs text-neutral-500">
+          Developed by <a href="https://www.privtech.net" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">PrivTech Solutions Limited</a>
+        </p>
       </div>
     </footer>
   )

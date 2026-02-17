@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
-import { Package, Heart, MapPin, AlertTriangle } from 'lucide-react'
+import { Package, Heart, MapPin, Star, AlertTriangle } from 'lucide-react'
 import ResendVerificationButton from './resend-verification-button'
 
 export const metadata = { title: 'My Account | Luxury Beauty ZM' }
@@ -35,6 +35,7 @@ export default async function AccountPage() {
           { title: 'My Orders', desc: 'Track and manage your orders', href: '/account/orders', icon: Package },
           { title: 'Wishlist', desc: 'Products you\'ve saved', href: '/account/wishlist', icon: Heart },
           { title: 'Addresses', desc: 'Manage delivery addresses', href: '/account/addresses', icon: MapPin },
+          { title: 'My Reviews', desc: 'Reviews you\'ve written', href: '/account/reviews', icon: Star },
         ].map(item => (
           <Link key={item.href} href={item.href} className="flex items-center gap-4 p-5 border rounded-sm hover:bg-neutral-50 transition-colors">
             <item.icon className="h-8 w-8 text-amber-800" />

@@ -10,9 +10,13 @@ export async function POST(req: Request) {
     const file = formData.get('file') as File
     if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-    if (!allowedTypes.includes(file.type)) return NextResponse.json({ error: 'Invalid file type' }, { status: 400 })
+    if (!allowedTypes.includes(file.type)) return NextResponse.json({ error: `Invalid file type: ${file.type}. Allowed: JPEG, PNG, WebP, GIF` }, { status: 400 })
     if (file.size > 5 * 1024 * 1024) return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 })
     const url = await uploadFile(file)
     return NextResponse.json({ url })
-  } catch { return NextResponse.json({ error: 'Upload failed' }, { status: 500 }) }
+  } catch (error) {
+    console.error('Upload error:', error)
+    const message = error instanceof Error ? error.message : 'Upload failed'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

@@ -59,7 +59,7 @@ export function HeroSection() {
   const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo])
 
   useEffect(() => {
-    const timer = setInterval(next, 6000)
+    const timer = setInterval(next, 10000)
     return () => clearInterval(timer)
   }, [next])
 
@@ -74,20 +74,20 @@ export function HeroSection() {
       {slides.map((s, i) => (
         <div
           key={i}
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+          className="absolute inset-y-0 right-0 w-1/2 sm:w-[45%] flex items-center justify-center transition-opacity duration-700 ease-in-out"
           style={{ opacity: i === current ? 1 : 0 }}
         >
           <img
             src={s.image}
             alt=""
-            className="relative z-10 h-full w-full object-cover"
+            className="relative z-10 h-[75%] w-auto max-w-[85%] object-contain drop-shadow-2xl"
           />
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-neutral-950 via-neutral-950/70 to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-[40%] z-20 bg-gradient-to-r from-neutral-950 to-transparent" />
         </div>
       ))}
 
       {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+      <div className="relative z-30 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
         <div className="max-w-2xl">
           <p
             key={`sub-${current}`}

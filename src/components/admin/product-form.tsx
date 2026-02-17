@@ -58,19 +58,23 @@ export function ProductForm({ product, categories, brands }: ProductFormProps) {
     const files = e.target.files
     if (!files?.length) return
     setUploading(true)
+    setError('')
     try {
       const urls: string[] = []
       for (const file of Array.from(files)) {
         const formData = new FormData()
         formData.append('file', file)
         const res = await fetch('/api/upload', { method: 'POST', body: formData })
-        if (!res.ok) throw new Error('Upload failed')
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ error: 'Upload failed' }))
+          throw new Error(data.error || 'Upload failed')
+        }
         const data = await res.json()
         urls.push(data.url)
       }
       setImages(prev => [...prev, ...urls])
-    } catch {
-      setError('Failed to upload one or more images')
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload one or more images')
     }
     setUploading(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
