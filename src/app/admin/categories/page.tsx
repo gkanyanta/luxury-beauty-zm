@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Plus, Pencil, Trash2, Loader2, X, Check } from 'lucide-react'
+import { Plus, Pencil, Trash2, Loader2, X, Check, ImagePlus } from 'lucide-react'
 
 interface ProductWithImage {
   id: string
@@ -30,8 +30,10 @@ export default function AdminCategoriesPage() {
   const [editing, setEditing] = useState<Category | null>(null)
   const [form, setForm] = useState({ name: '', description: '', imageUrl: '' })
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const fetchCategories = async () => {
     setLoading(true)
@@ -62,6 +64,28 @@ export default function AdminCategoriesPage() {
     setShowForm(false)
     setEditing(null)
     setError('')
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setError('')
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Upload failed' }))
+        throw new Error(data.error || 'Upload failed')
+      }
+      const data = await res.json()
+      setForm(f => ({ ...f, imageUrl: data.url }))
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload image')
+    }
+    setUploading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,7 +128,6 @@ export default function AdminCategoriesPage() {
     setDeleteId(null)
   }
 
-  // Products with images for the currently editing category
   const editingProducts = editing?.products?.filter(p => p.images.length > 0) || []
 
   return (
@@ -125,7 +148,7 @@ export default function AdminCategoriesPage() {
             <Input placeholder="Category Name *" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
             <Textarea placeholder="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={2} />
 
-            {/* Cover image picker */}
+            {/* Cover image */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-2">Cover Image</label>
               {form.imageUrl && (
@@ -136,9 +159,20 @@ export default function AdminCategoriesPage() {
                   </button>
                 </div>
               )}
-              {editing && editingProducts.length > 0 ? (
+
+              {/* Upload button */}
+              <div className="flex gap-2 mb-3">
+                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+                <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="gap-1">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
+                  Upload Image
+                </Button>
+              </div>
+
+              {/* Product image picker */}
+              {editing && editingProducts.length > 0 && (
                 <div>
-                  <p className="text-xs text-neutral-500 mb-2">Choose a product image as the category cover:</p>
+                  <p className="text-xs text-neutral-500 mb-2">Or choose from product images:</p>
                   <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
                     {editingProducts.map(p => {
                       const imgUrl = p.images[0].url
@@ -162,12 +196,7 @@ export default function AdminCategoriesPage() {
                     })}
                   </div>
                 </div>
-              ) : editing && editingProducts.length === 0 ? (
-                <p className="text-xs text-neutral-500">No products with images in this category yet. Add products first, or enter a URL below.</p>
-              ) : (
-                <p className="text-xs text-neutral-500">Save the category first, then edit it to pick a product image as cover.</p>
               )}
-              <Input placeholder="Or enter image URL manually" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} className="mt-2" />
             </div>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
