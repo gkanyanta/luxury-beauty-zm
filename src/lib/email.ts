@@ -30,6 +30,48 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
   })
 }
 
+export function emailVerificationEmail(name: string, verifyUrl: string) {
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a1a;">
+<div style="text-align:center;padding:30px 0;border-bottom:1px solid #e5e5e5;">
+<h1 style="font-size:24px;font-weight:300;letter-spacing:3px;margin:0;">LUXURY BEAUTY ZM</h1>
+</div>
+<div style="padding:30px 0;">
+<h2 style="font-size:18px;font-weight:400;">Verify Your Email</h2>
+<p>Dear ${name},</p>
+<p>Thank you for creating an account with Luxury Beauty ZM. Please verify your email address by clicking the button below.</p>
+<div style="text-align:center;margin:30px 0;">
+<a href="${verifyUrl}" style="background:#78350f;color:#fff;padding:14px 32px;text-decoration:none;font-size:14px;letter-spacing:1px;display:inline-block;">VERIFY EMAIL</a>
+</div>
+<p style="color:#888;font-size:13px;">This link will expire in 24 hours. If you did not create an account, you can safely ignore this email.</p>
+</div>
+<div style="text-align:center;padding:20px 0;border-top:1px solid #e5e5e5;color:#888;font-size:12px;">
+<p>Luxury Beauty ZM &mdash; 100% Authentic Beauty Products</p>
+</div></body></html>`
+}
+
+export function passwordResetEmail(name: string, resetUrl: string) {
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a1a;">
+<div style="text-align:center;padding:30px 0;border-bottom:1px solid #e5e5e5;">
+<h1 style="font-size:24px;font-weight:300;letter-spacing:3px;margin:0;">LUXURY BEAUTY ZM</h1>
+</div>
+<div style="padding:30px 0;">
+<h2 style="font-size:18px;font-weight:400;">Reset Your Password</h2>
+<p>Dear ${name},</p>
+<p>We received a request to reset the password for your account. Click the button below to set a new password.</p>
+<div style="text-align:center;margin:30px 0;">
+<a href="${resetUrl}" style="background:#78350f;color:#fff;padding:14px 32px;text-decoration:none;font-size:14px;letter-spacing:1px;display:inline-block;">RESET PASSWORD</a>
+</div>
+<p style="color:#888;font-size:13px;">This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
+</div>
+<div style="text-align:center;padding:20px 0;border-top:1px solid #e5e5e5;color:#888;font-size:12px;">
+<p>Luxury Beauty ZM &mdash; 100% Authentic Beauty Products</p>
+</div></body></html>`
+}
+
 export function orderConfirmationEmail(order: any) {
   const items = (order.items || []).map((item: any) => ({
     name: item.productName || item.name || 'Item',
