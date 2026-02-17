@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
 
 export async function uploadFile(file: File): Promise<string> {
-  const mode = process.env.UPLOAD_MODE || (process.env.VERCEL ? 'vercel-blob' : 'local')
+  if (process.env.BLOB_READ_WRITE_TOKEN) return uploadToVercelBlob(file)
+  const mode = process.env.UPLOAD_MODE || 'local'
   if (mode === 'vercel-blob') return uploadToVercelBlob(file)
   if (mode === 's3') return uploadToS3(file)
   return uploadLocal(file)
