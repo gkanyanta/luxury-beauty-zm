@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatPrice } from '@/lib/utils'
 import { Plus } from 'lucide-react'
+import { ProductActions } from './product-actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,19 +32,30 @@ export default async function AdminProductsPage() {
               <th className="text-right p-3 font-medium">Price</th>
               <th className="text-center p-3 font-medium hidden sm:table-cell">Stock</th>
               <th className="text-center p-3 font-medium">Status</th>
-              <th className="p-3"></th>
+              <th className="p-3 w-28"></th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {products.map(product => (
               <tr key={product.id} className="hover:bg-neutral-50">
-                <td className="p-3"><p className="font-medium truncate max-w-[200px]">{product.name}</p></td>
+                <td className="p-3">
+                  <div className="flex items-center gap-3">
+                    {product.images[0] ? (
+                      <img src={product.images[0].url} alt="" className="h-10 w-10 rounded object-cover shrink-0" />
+                    ) : (
+                      <div className="h-10 w-10 rounded bg-neutral-100 shrink-0" />
+                    )}
+                    <p className="font-medium truncate max-w-[180px]">{product.name}</p>
+                  </div>
+                </td>
                 <td className="p-3 hidden sm:table-cell text-neutral-500">{product.brand?.name || '-'}</td>
                 <td className="p-3 hidden md:table-cell text-neutral-500">{product.category?.name || '-'}</td>
                 <td className="p-3 text-right">{formatPrice(Number(product.price))}</td>
                 <td className="p-3 text-center hidden sm:table-cell">{product.stockQty}</td>
                 <td className="p-3 text-center"><Badge className={statusColor[product.status] || ''}>{product.status}</Badge></td>
-                <td className="p-3 text-right"><Link href={`/admin/products/${product.id}/edit`} className="text-amber-800 hover:underline text-xs">Edit</Link></td>
+                <td className="p-3">
+                  <ProductActions productId={product.id} productName={product.name} />
+                </td>
               </tr>
             ))}
           </tbody>

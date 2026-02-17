@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
@@ -6,8 +7,21 @@ const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
 
 export async function uploadFile(file: File): Promise<string> {
   const mode = process.env.UPLOAD_MODE || 'local'
+  if (mode === 'vercel-blob') return uploadToVercelBlob(file)
   if (mode === 's3') return uploadToS3(file)
   return uploadLocal(file)
+}
+
+async function uploadToVercelBlob(file: File): Promise<string> {
+  const ext = file.name.split('.').pop() || 'jpg'
+  const filename = `products/${uuidv4()}.${ext}`
+
+  const blob = await put(filename, file, {
+    access: 'public',
+    contentType: file.type,
+  })
+
+  return blob.url
 }
 
 async function uploadLocal(file: File): Promise<string> {
