@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
-import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { Loader2, Plus, Trash2, ImagePlus } from 'lucide-react'
 
 interface ProductFormProps {
   product?: any
@@ -44,12 +44,36 @@ export function ProductForm({ product, categories, brands }: ProductFormProps) {
 
   const [images, setImages] = useState<string[]>(product?.images?.map((i: any) => i.url) || [])
   const [newImageUrl, setNewImageUrl] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [variants, setVariants] = useState<any[]>(product?.variants || [])
 
   const update = (key: string, value: any) => setForm(prev => ({ ...prev, [key]: value }))
 
   const addImage = () => {
     if (newImageUrl) { setImages(prev => [...prev, newImageUrl]); setNewImageUrl('') }
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files?.length) return
+    setUploading(true)
+    try {
+      const urls: string[] = []
+      for (const file of Array.from(files)) {
+        const formData = new FormData()
+        formData.append('file', file)
+        const res = await fetch('/api/upload', { method: 'POST', body: formData })
+        if (!res.ok) throw new Error('Upload failed')
+        const data = await res.json()
+        urls.push(data.url)
+      }
+      setImages(prev => [...prev, ...urls])
+    } catch {
+      setError('Failed to upload one or more images')
+    }
+    setUploading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const addVariant = () => {
@@ -137,7 +161,12 @@ export function ProductForm({ product, categories, brands }: ProductFormProps) {
           ))}
         </div>
         <div className="flex gap-2">
-          <Input placeholder="Image URL" value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} />
+          <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileUpload} />
+          <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="gap-1">
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
+            Browse Files
+          </Button>
+          <Input placeholder="Image URL" value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} className="flex-1" />
           <Button type="button" variant="outline" onClick={addImage}>Add</Button>
         </div>
       </div>
