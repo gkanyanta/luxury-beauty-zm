@@ -2,6 +2,35 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+// Patch missing seed data
+export async function PATCH(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const secret = searchParams.get('secret')
+  if (secret !== process.env.NEXTAUTH_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  try {
+    const added: string[] = []
+    const requiredCategories = [
+      { name: 'Fragrances', slug: 'fragrances', description: 'Luxury and niche perfumes' },
+      { name: 'K-Beauty', slug: 'k-beauty', description: 'Korean skincare and beauty' },
+      { name: 'Skincare', slug: 'skincare', description: 'Premium UK & USA skincare brands' },
+      { name: 'Hair Products', slug: 'hair-products', description: 'Professional hair care and styling' },
+    ]
+    for (const cat of requiredCategories) {
+      const exists = await prisma.category.findUnique({ where: { slug: cat.slug } })
+      if (!exists) {
+        await prisma.category.create({ data: cat })
+        added.push(cat.name)
+      }
+    }
+    return NextResponse.json({ message: 'Patch complete', added })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
 // Temporary seed endpoint - remove after first use
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -53,6 +82,7 @@ export async function POST(request: Request) {
       { name: 'Fragrances', slug: 'fragrances', description: 'Luxury and niche perfumes' },
       { name: 'K-Beauty', slug: 'k-beauty', description: 'Korean skincare and beauty' },
       { name: 'Skincare', slug: 'skincare', description: 'Premium UK & USA skincare brands' },
+      { name: 'Hair Products', slug: 'hair-products', description: 'Professional hair care and styling' },
     ]
     const categories: Record<string, any> = {}
     for (const c of categoriesData) {
