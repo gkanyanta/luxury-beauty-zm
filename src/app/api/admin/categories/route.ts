@@ -6,7 +6,14 @@ import { slugify } from '@/lib/utils'
 export async function GET() {
   await requireAdmin()
   const categories = await prisma.category.findMany({
-    include: { _count: { select: { products: true } } },
+    include: {
+      _count: { select: { products: true } },
+      products: {
+        where: { status: 'ACTIVE' },
+        select: { id: true, name: true, images: { take: 1, orderBy: { sortOrder: 'asc' } } },
+        orderBy: { createdAt: 'desc' },
+      },
+    },
     orderBy: { sortOrder: 'asc' },
   })
   return NextResponse.json(categories)

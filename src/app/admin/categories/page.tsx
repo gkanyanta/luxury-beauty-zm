@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Plus, Pencil, Trash2, Loader2, X } from 'lucide-react'
+import { Plus, Pencil, Trash2, Loader2, X, Check } from 'lucide-react'
+
+interface ProductWithImage {
+  id: string
+  name: string
+  images: { url: string }[]
+}
 
 interface Category {
   id: string
@@ -14,6 +20,7 @@ interface Category {
   imageUrl: string | null
   sortOrder: number
   _count: { products: number }
+  products: ProductWithImage[]
 }
 
 export default function AdminCategoriesPage() {
@@ -97,6 +104,9 @@ export default function AdminCategoriesPage() {
     setDeleteId(null)
   }
 
+  // Products with images for the currently editing category
+  const editingProducts = editing?.products?.filter(p => p.images.length > 0) || []
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -104,17 +114,62 @@ export default function AdminCategoriesPage() {
         <Button onClick={openCreate} className="gap-1"><Plus className="h-4 w-4" /> Add Category</Button>
       </div>
 
-      {/* Form modal */}
+      {/* Form */}
       {showForm && (
         <div className="bg-white rounded-lg border p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-medium">{editing ? 'Edit Category' : 'New Category'}</h2>
             <button onClick={closeForm}><X className="h-4 w-4 text-neutral-400" /></button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Input placeholder="Category Name *" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
             <Textarea placeholder="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={2} />
-            <Input placeholder="Image URL (optional)" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} />
+
+            {/* Cover image picker */}
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 mb-2">Cover Image</label>
+              {form.imageUrl && (
+                <div className="mb-3 relative inline-block">
+                  <img src={form.imageUrl} alt="Cover" className="h-32 w-48 object-cover rounded border" />
+                  <button type="button" onClick={() => setForm(f => ({ ...f, imageUrl: '' }))} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5">
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+              {editing && editingProducts.length > 0 ? (
+                <div>
+                  <p className="text-xs text-neutral-500 mb-2">Choose a product image as the category cover:</p>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+                    {editingProducts.map(p => {
+                      const imgUrl = p.images[0].url
+                      const isSelected = form.imageUrl === imgUrl
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, imageUrl: imgUrl }))}
+                          className={`relative rounded border-2 overflow-hidden transition-all ${isSelected ? 'border-amber-500 ring-2 ring-amber-200' : 'border-transparent hover:border-neutral-300'}`}
+                          title={p.name}
+                        >
+                          <img src={imgUrl} alt={p.name} className="h-16 w-full object-cover" />
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
+                              <Check className="h-5 w-5 text-amber-700" />
+                            </div>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : editing && editingProducts.length === 0 ? (
+                <p className="text-xs text-neutral-500">No products with images in this category yet. Add products first, or enter a URL below.</p>
+              ) : (
+                <p className="text-xs text-neutral-500">Save the category first, then edit it to pick a product image as cover.</p>
+              )}
+              <Input placeholder="Or enter image URL manually" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} className="mt-2" />
+            </div>
+
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="flex gap-2">
               <Button type="submit" disabled={saving}>
@@ -131,7 +186,7 @@ export default function AdminCategoriesPage() {
         <table className="w-full text-sm">
           <thead className="bg-neutral-50 border-b">
             <tr>
-              <th className="text-left p-3 font-medium">Name</th>
+              <th className="text-left p-3 font-medium">Category</th>
               <th className="text-left p-3 font-medium hidden sm:table-cell">Slug</th>
               <th className="text-left p-3 font-medium hidden md:table-cell">Description</th>
               <th className="text-center p-3 font-medium">Products</th>
@@ -145,7 +200,16 @@ export default function AdminCategoriesPage() {
               <tr><td colSpan={5} className="p-8 text-center text-neutral-500">No categories yet</td></tr>
             ) : categories.map(cat => (
               <tr key={cat.id} className="hover:bg-neutral-50">
-                <td className="p-3 font-medium">{cat.name}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-3">
+                    {cat.imageUrl ? (
+                      <img src={cat.imageUrl} alt="" className="h-10 w-10 rounded object-cover shrink-0" />
+                    ) : (
+                      <div className="h-10 w-10 rounded bg-neutral-100 shrink-0" />
+                    )}
+                    <span className="font-medium">{cat.name}</span>
+                  </div>
+                </td>
                 <td className="p-3 hidden sm:table-cell text-neutral-500">{cat.slug}</td>
                 <td className="p-3 hidden md:table-cell text-neutral-500 truncate max-w-[200px]">{cat.description || '-'}</td>
                 <td className="p-3 text-center">{cat._count.products}</td>

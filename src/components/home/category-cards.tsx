@@ -34,7 +34,14 @@ export function CategoryCards({ categories }: { categories?: any[] }) {
           return (
             <motion.div key={cat.slug || cat.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
               <Link href={`/shop?category=${cat.slug}`} className="group block relative h-64 sm:h-80 rounded-sm overflow-hidden bg-neutral-900">
-                <div className={`absolute inset-0 bg-gradient-to-t ${gradient}`} />
+                {cat.imageUrl && (
+                  <img
+                    src={cat.imageUrl}
+                    alt={cat.name}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
+                <div className={`absolute inset-0 ${cat.imageUrl ? 'bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent' : `bg-gradient-to-t ${gradient}`}`} />
                 <div className="relative h-full flex flex-col justify-end p-6">
                   <h3 className="text-xl font-light tracking-wide text-white">{cat.name}</h3>
                   <p className="mt-1 text-sm text-white/70">{cat.description || defaults.description}</p>
