@@ -8,33 +8,44 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { useCartStore } from '@/store/cart'
 import { formatPrice } from '@/lib/utils'
-import { ShoppingBag, Heart, Star, Truck, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ShoppingBag, Heart, Star, Truck, ShieldCheck, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 
 export function ProductDetail({ product }: { product: any }) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedVariant, setSelectedVariant] = useState<any>(null)
   const [qty, setQty] = useState(1)
-  const addItem = useCartStore(s => s.addItem)
+  const validateAndAddItem = useCartStore(s => s.validateAndAddItem)
   const [added, setAdded] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [stockError, setStockError] = useState('')
 
   const images = product.images || []
   const price = selectedVariant ? selectedVariant.price : product.price
   const comparePrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice
-  const inStock = selectedVariant ? selectedVariant.stockQty > 0 : product.stockQty > 0
+  const currentStock = selectedVariant ? selectedVariant.stockQty : product.stockQty
+  const inStock = currentStock > 0
 
-  const handleAdd = () => {
-    addItem({
+  const handleAdd = async () => {
+    setAdding(true)
+    setStockError('')
+    const result = await validateAndAddItem({
       productId: product.id,
       variantId: selectedVariant?.id || null,
       name: product.name + (selectedVariant ? ` - ${selectedVariant.name}` : ''),
       price: Number(price),
       image: images[0]?.url || '',
       slug: product.slug,
-      maxStock: selectedVariant?.stockQty || product.stockQty,
+      maxStock: currentStock,
       quantity: qty,
     })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
+    if (result.success) {
+      setAdded(true)
+      setTimeout(() => setAdded(false), 2000)
+    } else {
+      setStockError(result.message || 'Unable to add to cart')
+      setTimeout(() => setStockError(''), 4000)
+    }
+    setAdding(false)
   }
 
   return (
@@ -89,11 +100,24 @@ export function ProductDetail({ product }: { product: any }) {
           )}
         </div>
 
+        {/* Stock indicator */}
+        <div className="mt-2">
+          {currentStock > 5 && (
+            <p className="text-sm text-green-600">{currentStock} in stock</p>
+          )}
+          {currentStock > 0 && currentStock <= 5 && (
+            <p className="text-sm text-amber-600 font-medium">Only {currentStock} left</p>
+          )}
+          {currentStock === 0 && (
+            <p className="text-sm text-red-600 font-medium">Out of stock</p>
+          )}
+        </div>
+
         {/* Variants */}
         {product.variants?.length > 0 && (
           <div className="mt-6">
             <label className="text-sm font-medium text-neutral-700 mb-2 block">Size / Variant</label>
-            <Select value={selectedVariant?.id || ''} onValueChange={(v) => setSelectedVariant(product.variants.find((vr: any) => vr.id === v))}>
+            <Select value={selectedVariant?.id || ''} onValueChange={(v) => { setSelectedVariant(product.variants.find((vr: any) => vr.id === v)); setQty(1) }}>
               <SelectTrigger><SelectValue placeholder="Select variant" /></SelectTrigger>
               <SelectContent>
                 {product.variants.map((v: any) => (
@@ -109,13 +133,14 @@ export function ProductDetail({ product }: { product: any }) {
           <div className="flex items-center border rounded-sm">
             <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-3 py-2 text-neutral-600 hover:bg-neutral-50">-</button>
             <span className="px-3 py-2 text-sm min-w-[40px] text-center">{qty}</span>
-            <button onClick={() => setQty(q => q + 1)} className="px-3 py-2 text-neutral-600 hover:bg-neutral-50">+</button>
+            <button onClick={() => setQty(q => Math.min(q + 1, currentStock))} disabled={qty >= currentStock} className="px-3 py-2 text-neutral-600 hover:bg-neutral-50 disabled:opacity-30">+</button>
           </div>
-          <Button variant="luxury" size="lg" onClick={handleAdd} disabled={!inStock} className="flex-1 gap-2">
-            <ShoppingBag className="h-4 w-4" />
+          <Button variant="luxury" size="lg" onClick={handleAdd} disabled={!inStock || adding} className="flex-1 gap-2">
+            {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />}
             {added ? 'Added!' : !inStock ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         </div>
+        {stockError && <p className="text-sm text-red-500 mt-2">{stockError}</p>}
 
         {/* Key info */}
         <div className="mt-6 space-y-2 border-t pt-4 text-sm text-neutral-600">

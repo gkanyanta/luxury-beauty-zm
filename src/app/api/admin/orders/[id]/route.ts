@@ -11,7 +11,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     PLACED: ['AWAITING_PAYMENT', 'PAID', 'CANCELLED'],
     AWAITING_PAYMENT: ['PAID', 'CANCELLED'],
     PAID: ['PACKED', 'CANCELLED', 'REFUNDED'],
-    PACKED: ['SHIPPED'],
+    PACKED: ['SHIPPED', 'CANCELLED'],
     SHIPPED: ['DELIVERED'],
     DELIVERED: ['REFUNDED'],
   }
@@ -38,6 +38,33 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
   if (trackingNumber) updateData.trackingNumber = trackingNumber
 
+  // If cancelling, wrap order update + stock restoration in a transaction
+  if (status === 'CANCELLED') {
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.order.update({ where: { id }, data: updateData })
+
+      const items = await tx.orderItem.findMany({ where: { orderId: id } })
+      for (const item of items) {
+        if (item.variantId) {
+          await tx.productVariant.update({ where: { id: item.variantId }, data: { stockQty: { increment: item.quantity } } })
+        } else {
+          await tx.product.update({ where: { id: item.productId }, data: { stockQty: { increment: item.quantity }, soldCount: { decrement: item.quantity } } })
+        }
+      }
+
+      await tx.auditLog.create({
+        data: {
+          userId: session.user.id, action: 'UPDATE_ORDER', entity: 'Order', entityId: id,
+          newValue: { from: order.status, to: status, trackingNumber },
+        },
+      })
+
+      return result
+    })
+
+    return NextResponse.json(updated)
+  }
+
   const updated = await prisma.order.update({ where: { id }, data: updateData })
 
   await prisma.auditLog.create({
@@ -46,18 +73,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       newValue: { from: order.status, to: status, trackingNumber },
     },
   })
-
-  // If cancelled, restore stock
-  if (status === 'CANCELLED') {
-    const items = await prisma.orderItem.findMany({ where: { orderId: id } })
-    for (const item of items) {
-      if (item.variantId) {
-        await prisma.productVariant.update({ where: { id: item.variantId }, data: { stockQty: { increment: item.quantity } } })
-      } else {
-        await prisma.product.update({ where: { id: item.productId }, data: { stockQty: { increment: item.quantity }, soldCount: { decrement: item.quantity } } })
-      }
-    }
-  }
 
   return NextResponse.json(updated)
 }

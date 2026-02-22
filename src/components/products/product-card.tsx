@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { ShoppingBag, Star } from 'lucide-react'
+import { ShoppingBag, Star, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cart'
@@ -18,11 +19,33 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const addItem = useCartStore((s) => s.addItem)
+  const validateAndAddItem = useCartStore((s) => s.validateAndAddItem)
+  const [adding, setAdding] = useState(false)
+  const [stockError, setStockError] = useState('')
   const price = typeof product.price === 'string' ? parseFloat(product.price) : product.price
   const compareAt = product.compareAtPrice ? (typeof product.compareAtPrice === 'string' ? parseFloat(product.compareAtPrice) : product.compareAtPrice) : null
   const discount = compareAt ? Math.round(((compareAt - price) / compareAt) * 100) : 0
   const primaryImage = product.images[0]?.url || '/placeholder-product.svg'
+
+  const handleQuickAdd = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (product.stockQty <= 0 || adding) return
+    setAdding(true)
+    setStockError('')
+    const result = await validateAndAddItem({
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      price,
+      image: primaryImage,
+      maxStock: product.stockQty,
+    })
+    if (!result.success) {
+      setStockError(result.message || 'Out of stock')
+      setTimeout(() => setStockError(''), 3000)
+    }
+    setAdding(false)
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="group relative">
@@ -34,9 +57,9 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.stockQty === 0 && <Badge variant="default" className="text-[10px]">Sold Out</Badge>}
           </div>
           <div className="absolute bottom-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button onClick={(e) => { e.preventDefault(); if (product.stockQty > 0) addItem({ productId: product.id, slug: product.slug, name: product.name, price, image: primaryImage, maxStock: product.stockQty }) }}
-              className="rounded-full bg-white p-2 shadow-md hover:bg-neutral-50 transition-colors" title="Add to cart">
-              <ShoppingBag className="h-4 w-4" />
+            <button onClick={handleQuickAdd} disabled={product.stockQty <= 0 || adding}
+              className="rounded-full bg-white p-2 shadow-md hover:bg-neutral-50 transition-colors disabled:opacity-50" title="Add to cart">
+              {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -54,6 +77,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-xs text-neutral-500">{product.avgRating.toFixed(1)} ({product.reviewCount})</span>
           </div>
         )}
+        {product.stockQty > 5 && (
+          <p className="text-xs text-green-600">In Stock</p>
+        )}
+        {product.stockQty > 0 && product.stockQty <= 5 && (
+          <p className="text-xs text-amber-600">Only {product.stockQty} left</p>
+        )}
+        {stockError && <p className="text-xs text-red-500">{stockError}</p>}
       </div>
     </motion.div>
   )
