@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react'
 
 const transitions: Record<string, { label: string; next: string; variant?: any }[]> = {
   PLACED: [{ label: 'Mark as Paid', next: 'PAID' }, { label: 'Cancel Order', next: 'CANCELLED', variant: 'destructive' }],
+  AWAITING_PAYMENT: [{ label: 'Mark as Paid', next: 'PAID' }, { label: 'Cancel Order', next: 'CANCELLED', variant: 'destructive' }],
   PAID: [{ label: 'Mark as Packed', next: 'PACKED' }, { label: 'Cancel Order', next: 'CANCELLED', variant: 'destructive' }],
   PACKED: [{ label: 'Mark as Shipped', next: 'SHIPPED' }, { label: 'Cancel Order', next: 'CANCELLED', variant: 'destructive' }],
   SHIPPED: [{ label: 'Mark as Delivered', next: 'DELIVERED' }],
