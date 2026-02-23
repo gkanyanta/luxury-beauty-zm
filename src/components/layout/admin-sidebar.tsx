@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, FolderOpen, ShoppingCart, CreditCard, BarChart3, Settings, Tag, Truck, Users, LogOut, ChevronLeft, Menu } from 'lucide-react'
+import { LayoutDashboard, Package, FolderOpen, ShoppingCart, CreditCard, BarChart3, Settings, Tag, Truck, Users, MessageSquare, LogOut, ChevronLeft, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -13,6 +13,7 @@ const navItems = [
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
   { name: 'Payments', href: '/admin/payments', icon: CreditCard },
   { name: 'Customers', href: '/admin/customers', icon: Users },
+  { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
   { name: 'Discounts', href: '/admin/discounts', icon: Tag },
   { name: 'Shipping', href: '/admin/shipping', icon: Truck },
   { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
