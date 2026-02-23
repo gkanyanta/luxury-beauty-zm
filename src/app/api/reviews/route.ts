@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       where: { productId, order: { userId: session.user.id, status: { in: ['PAID', 'PACKED', 'SHIPPED', 'DELIVERED'] } } },
     })
     const review = await prisma.review.create({
-      data: { productId, userId: session.user.id, rating: parsed.rating, title: parsed.title, comment: parsed.comment, verified: !!purchased, approved: true },
+      data: { productId, userId: session.user.id, rating: parsed.rating, title: parsed.title, comment: parsed.comment, imageUrl: parsed.imageUrl, verified: !!purchased, approved: true },
     })
     const stats = await prisma.review.aggregate({ where: { productId, approved: true }, _avg: { rating: true }, _count: true })
     await prisma.product.update({ where: { id: productId }, data: { avgRating: stats._avg.rating || 0, reviewCount: stats._count } })

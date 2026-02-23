@@ -300,6 +300,7 @@ model Review {
   rating    Int    // 1-5
   title     String?
   comment   String?
+  imageUrl  String?
   verified  Boolean @default(false)
   approved  Boolean @default(false)
 

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Star, BadgeCheck } from 'lucide-react'
 import { ReviewForm } from './review-form'
 
@@ -9,6 +10,7 @@ interface Review {
   rating: number
   title: string | null
   comment: string | null
+  imageUrl: string | null
   verified: boolean
   createdAt: string
   user: { name: string | null }
@@ -20,7 +22,7 @@ interface ReviewSectionProps {
   avgRating: number
   reviewCount: number
   userId?: string
-  userReview?: { rating: number; title: string | null; comment: string | null } | null
+  userReview?: { rating: number; title: string | null; comment: string | null; imageUrl: string | null } | null
 }
 
 function StarRating({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'lg' }) {
@@ -80,6 +82,11 @@ export function ReviewSection({ reviews, productId, avgRating, reviewCount, user
               </div>
               {review.title && <p className="text-sm font-medium text-neutral-900 mb-1">{review.title}</p>}
               {review.comment && <p className="text-sm text-neutral-600 leading-relaxed">{review.comment}</p>}
+              {review.imageUrl && (
+                <a href={review.imageUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block">
+                  <Image src={review.imageUrl} alt="Review photo" width={120} height={120} className="rounded-sm object-cover hover:opacity-90 transition-opacity" />
+                </a>
+              )}
               <p className="mt-2 text-xs text-neutral-400">
                 {review.user.name || 'Anonymous'} &middot; {new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>

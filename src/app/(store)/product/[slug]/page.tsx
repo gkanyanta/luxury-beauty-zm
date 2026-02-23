@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const userReview = session?.user
     ? await prisma.review.findUnique({
         where: { productId_userId: { productId: product.id, userId: session.user.id } },
-        select: { rating: true, title: true, comment: true },
+        select: { rating: true, title: true, comment: true, imageUrl: true },
       })
     : null
 
