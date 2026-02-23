@@ -2,21 +2,24 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { useCartStore } from '@/store/cart'
 import { formatPrice } from '@/lib/utils'
-import { ShoppingBag, Heart, Star, Truck, ShieldCheck, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { ShoppingBag, Heart, Star, Truck, ShieldCheck, ChevronLeft, ChevronRight, Loader2, Zap } from 'lucide-react'
 
 export function ProductDetail({ product }: { product: any }) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedVariant, setSelectedVariant] = useState<any>(null)
   const [qty, setQty] = useState(1)
   const validateAndAddItem = useCartStore(s => s.validateAndAddItem)
+  const router = useRouter()
   const [added, setAdded] = useState(false)
   const [adding, setAdding] = useState(false)
+  const [buying, setBuying] = useState(false)
   const [stockError, setStockError] = useState('')
 
   const images = product.images || []
@@ -46,6 +49,28 @@ export function ProductDetail({ product }: { product: any }) {
       setTimeout(() => setStockError(''), 4000)
     }
     setAdding(false)
+  }
+
+  const handleBuyNow = async () => {
+    setBuying(true)
+    setStockError('')
+    const result = await validateAndAddItem({
+      productId: product.id,
+      variantId: selectedVariant?.id || null,
+      name: product.name + (selectedVariant ? ` - ${selectedVariant.name}` : ''),
+      price: Number(price),
+      image: images[0]?.url || '',
+      slug: product.slug,
+      maxStock: currentStock,
+      quantity: qty,
+    })
+    if (result.success) {
+      router.push('/checkout')
+    } else {
+      setStockError(result.message || 'Unable to add to cart')
+      setTimeout(() => setStockError(''), 4000)
+      setBuying(false)
+    }
   }
 
   return (
@@ -140,6 +165,10 @@ export function ProductDetail({ product }: { product: any }) {
             {added ? 'Added!' : !inStock ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         </div>
+        <Button size="lg" onClick={handleBuyNow} disabled={!inStock || buying} className="w-full mt-2 gap-2 bg-neutral-900 text-white hover:bg-neutral-800">
+          {buying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+          Buy Now
+        </Button>
         {stockError && <p className="text-sm text-red-500 mt-2">{stockError}</p>}
 
         {/* Key info */}
